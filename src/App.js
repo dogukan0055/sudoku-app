@@ -96,7 +96,7 @@ const generateSudoku = (difficulty = 'easy') => {
 };
 
 // Socket.IO connection
-const SOCKET_SERVER = 'http://localhost:5000'; // Change this to your server URL
+const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
 
 const SudokuGame = () => {
   const [gameMode, setGameMode] = useState('menu'); // menu, offline, online, host, join
