@@ -103,6 +103,7 @@ const SudokuGame = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [difficulty, setDifficulty] = useState('easy');
   const [grid, setGrid] = useState(Array(9).fill().map(() => Array(9).fill(0)));
+  // eslint-disable-next-line
   const [solution, setSolution] = useState(Array(9).fill().map(() => Array(9).fill(0)));
   const [initialGrid, setInitialGrid] = useState(Array(9).fill().map(() => Array(9).fill(0)));
   const [selectedCell, setSelectedCell] = useState({ row: -1, col: -1 });
@@ -118,8 +119,10 @@ const SudokuGame = () => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [socket, setSocket] = useState(null);
+  // eslint-disable-next-line
   const [isConnected, setIsConnected] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  // eslint-disable-next-line
   const [playerProgress, setPlayerProgress] = useState({});
 
   // Timer effect
@@ -318,7 +321,7 @@ const SudokuGame = () => {
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
+  // eslint-disable-next-line
   const generateRoomCode = () => {
     return Math.random().toString(36).substr(2, 6).toUpperCase();
   };
