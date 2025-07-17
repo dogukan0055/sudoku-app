@@ -481,12 +481,13 @@ const SudokuGame = () => {
   // Game Screen (both offline and online)
   return (
     <div className={`
-      min-h-screen bg-white dark:bg-gray-800 p-4
-      container mx-auto max-w-7xl flex flex-col lg:flex-row gap-6`}>
-      <div className={`
-        flex-1 lg:max-w-2xl mx-auto w-full`}>
+    min-h-screen bg-white dark:bg-gray-900 p-4
+    container mx-auto max-w-7xl flex flex-col lg:flex-row gap-6
+    transition-colors duration-300`}>
+      <div className="flex-1 lg:max-w-2xl mx-auto w-full">
+
         {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+        <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 mb-6 transition-colors duration-300">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <button
@@ -497,21 +498,21 @@ const SudokuGame = () => {
               </button>
               <button
                 onClick={toggleTheme}
-                className="p-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-gray-200"
+                className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
                 title="Toggle Theme"
               >
                 {theme === 'light' ? '🌙' : '☀️'}
               </button>
               <div>
                 <h1 className="text-lg font-bold">Sudoku</h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   {gameMode === 'offline' ? `Level ${currentLevel} - ${difficulty}` : `Room: ${roomCode}`}
                 </p>
               </div>
             </div>
 
             <div className="text-right">
-              <div className="flex items-center gap-1 text-sm text-gray-600">
+              <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
                 <Clock size={16} />
                 {formatTime(gameTime)}
               </div>
@@ -528,12 +529,12 @@ const SudokuGame = () => {
             <div className="mt-2 flex gap-2">
               <button
                 onClick={() => setShowChat(!showChat)}
-                className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-lg text-sm"
+                className="flex items-center gap-1 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm"
               >
                 <MessageCircle size={16} />
                 Chat
               </button>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
                 Progress: {calculateProgress(grid)}%
               </div>
             </div>
@@ -541,7 +542,7 @@ const SudokuGame = () => {
         </div>
 
         {/* Sudoku Grid */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+        <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 mb-6 transition-colors duration-300">
           <div className="grid grid-cols-9 gap-0 border-2 border-black w-fit mx-auto">
             {grid.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
@@ -558,21 +559,20 @@ const SudokuGame = () => {
         </div>
 
         {/* Number Input */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 transition-colors duration-300">
           <div className="grid grid-cols-5 gap-3">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
               <button
                 key={num}
                 onClick={() => handleNumberInput(num)}
-                className="h-12 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 font-semibold rounded-lg"
+                className="h-12 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg"
               >
                 {num}
               </button>
             ))}
             <button
               onClick={() => handleNumberInput(0)}
-              className="h-12 bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-700
- font-semibold rounded-lg"
+              className="h-12 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg"
             >
               Clear
             </button>
@@ -582,11 +582,9 @@ const SudokuGame = () => {
 
       {/* Side panel for online mode */}
       {gameMode === 'online' && (
-        <div className={`
-          lg:w-80 space-y-4`}>
-          {/* Game completion message */}
+        <div className="lg:w-80 space-y-4">
           {isGameComplete && (
-            <div className="bg-green-100 border border-green-400 rounded-xl p-6">
+            <div className="bg-green-100 border border-green-400 rounded-xl p-6 transition-colors duration-300">
               <div className="flex items-center gap-2 text-green-700">
                 <Trophy size={20} />
                 <span className="font-semibold">Congratulations!</span>
@@ -605,16 +603,20 @@ const SudokuGame = () => {
             </div>
           )}
 
-          {/* Chat panel */}
           {showChat && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sticky top-4">
+            <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 sticky top-4 transition-colors duration-300">
               <div className="h-[400px] overflow-y-auto mb-4 border rounded-lg p-4">
                 {messages.map(msg => (
-                  <div key={msg.id} className={`text-sm mb-1 ${msg.type === 'system' ? 'text-gray-600 italic' :
-                    msg.type === 'achievement' ? 'text-green-600 font-semibold' :
-                      'bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700'
-                    }`}>
-                    <span className="text-xs text-gray-500">{msg.timestamp}</span> {msg.text}
+                  <div
+                    key={msg.id}
+                    className={`text-sm mb-1 ${msg.type === 'system'
+                      ? 'text-gray-600 italic dark:text-gray-300'
+                      : msg.type === 'achievement'
+                        ? 'text-green-600 font-semibold'
+                        : 'text-gray-800 dark:text-gray-200'
+                      }`}
+                  >
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{msg.timestamp}</span> {msg.text}
                   </div>
                 ))}
               </div>
@@ -626,12 +628,12 @@ const SudokuGame = () => {
                     value={currentMessage}
                     onChange={(e) => setCurrentMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white transition-colors duration-300"
                     placeholder="Type a message..."
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg"
+                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
                   >
                     <Send size={20} />
                   </button>
@@ -642,7 +644,7 @@ const SudokuGame = () => {
                     <button
                       key={emoji}
                       onClick={() => sendEmoji(emoji)}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors"
                     >
                       {emoji}
                     </button>
@@ -655,6 +657,7 @@ const SudokuGame = () => {
       )}
     </div>
   );
+
 };
 
 export default SudokuGame;
