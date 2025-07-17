@@ -180,7 +180,6 @@ const SudokuGame = () => {
         newGrid[selectedCell.row][selectedCell.col] = num;
         newErrors[selectedCell.row][selectedCell.col] = false;
 
-
         // Check for completion
         const isComplete = newGrid.every(row => row.every(cell => cell !== 0));
         if (isComplete) {
@@ -193,7 +192,6 @@ const SudokuGame = () => {
       } else {
         newGrid[selectedCell.row][selectedCell.col] = num; // keep wrong value visible
         newErrors[selectedCell.row][selectedCell.col] = true;
-
       }
 
       setGrid(newGrid);
@@ -273,7 +271,7 @@ const SudokuGame = () => {
     if (initialGrid[row][col] !== 0) {
       className += ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
     } else {
-      className += ' bg-white hover:bg-blue-250 dark:bg-gray-800 dark:hover:bg-blue-900 ';
+      className += ' bg-white hover:bg-blue-500 dark:bg-gray-800 dark:hover:bg-blue-900 ';
     }
 
     // Selected cell
