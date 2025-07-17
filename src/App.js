@@ -37,10 +37,6 @@ const SudokuGame = () => {
 
   const { theme, toggleTheme } = useTheme();
 
-  const [lastWrongNumber, setLastWrongNumber] = useState(null);
-
-
-
   // Timer effect
   useEffect(() => {
     let interval;
@@ -179,11 +175,11 @@ const SudokuGame = () => {
       if (num === 0) {
         newGrid[selectedCell.row][selectedCell.col] = 0;
         newErrors[selectedCell.row][selectedCell.col] = false;
-        setLastWrongNumber(null);
+
       } else if (isValidMove(selectedCell.row, selectedCell.col, num)) {
         newGrid[selectedCell.row][selectedCell.col] = num;
         newErrors[selectedCell.row][selectedCell.col] = false;
-        setLastWrongNumber(null);
+
 
         // Check for completion
         const isComplete = newGrid.every(row => row.every(cell => cell !== 0));
@@ -197,7 +193,7 @@ const SudokuGame = () => {
       } else {
         newGrid[selectedCell.row][selectedCell.col] = num; // keep wrong value visible
         newErrors[selectedCell.row][selectedCell.col] = true;
-        setLastWrongNumber(num);
+
       }
 
       setGrid(newGrid);
@@ -277,7 +273,7 @@ const SudokuGame = () => {
     if (initialGrid[row][col] !== 0) {
       className += ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
     } else {
-      className += ' bg-white hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-blue-900 ';
+      className += ' bg-white hover:bg-blue-250 dark:bg-gray-800 dark:hover:bg-blue-900 ';
     }
 
     // Selected cell
@@ -288,11 +284,6 @@ const SudokuGame = () => {
     // Error highlighting
     if (errors[row][col]) {
       className += ' bg-red-200 dark:bg-red-500 ';
-    }
-
-    // Highlight all cells with lastWrongNumber when active
-    if (lastWrongNumber !== null && grid[row][col] === lastWrongNumber) {
-      className += ' bg-red-300 dark:bg-red-600 ';
     }
 
     // Grid borders
