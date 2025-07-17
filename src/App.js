@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Users, MessageCircle, Send, Home, Play, UserPlus, Trophy, Clock, User } from 'lucide-react';
 import io from 'socket.io-client';
 import { formatTime, calculateProgress } from './utils/helpers'; // Import helper functions
-import { generateSudoku } from './utils/sudoku'; // Import Sudoku generation logic
+import { generateSudoku, createEmptyGrid } from './utils/sudoku'; // Import Sudoku generation logic
 
 // Socket.IO connection
 const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
