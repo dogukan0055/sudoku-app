@@ -5,6 +5,9 @@ import { generateSudoku, createEmptyGrid } from './utils/sudoku'; // Import Sudo
 import { createSocketConnection } from './utils/socket';
 import { useTheme } from './utils/theme';
 import useSoundEffect from './utils/useSoundEffect'; // Custom hook for sound effects
+import Swal from 'sweetalert2';
+import { launchConfetti } from './utils/confetti';
+
 
 // Socket.IO connection
 const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
@@ -65,6 +68,29 @@ const SudokuGame = () => {
   useEffect(() => {
     let interval;
     if (isGameActive && !isGameComplete) {
+      if (gameMode === 'offline') {
+        launchConfetti();
+        Swal.fire({
+          icon: 'success',
+          title: '🎉 Puzzle Completed!',
+          text: 'Moving to the next level...',
+          timer: 3000,
+          showConfirmButton: false
+        });
+        setTimeout(() => {
+          nextLevel(); // This should already exist to load the next puzzle
+        }, 3000);
+      } else if (gameMode === 'online') {
+        launchConfetti();
+        Swal.fire({
+          icon: 'success',
+          title: '🎉 Puzzle Completed!',
+          text: 'You finished the puzzle!',
+          timer: 3000,
+          showConfirmButton: false
+        });
+        socket.emit('playerCompleted', { player: playerName }); // notify others
+      }
       interval = setInterval(() => {
         setGameTime(prev => prev + 1);
       }, 1000);
