@@ -37,6 +37,9 @@ const SudokuGame = () => {
 
   const { theme, toggleTheme } = useTheme();
 
+  const [lastWrongNumber, setLastWrongNumber] = useState(null);
+
+
 
   // Timer effect
   useEffect(() => {
@@ -170,17 +173,19 @@ const SudokuGame = () => {
 
   const handleNumberInput = (num) => {
     if (selectedCell.row !== -1 && selectedCell.col !== -1) {
-      const newGrid = [...grid];
-      const newErrors = [...errors];
+      const newGrid = [...grid.map(row => [...row])];
+      const newErrors = [...errors.map(row => [...row])];
 
       if (num === 0) {
         newGrid[selectedCell.row][selectedCell.col] = 0;
         newErrors[selectedCell.row][selectedCell.col] = false;
+        setLastWrongNumber(null);
       } else if (isValidMove(selectedCell.row, selectedCell.col, num)) {
         newGrid[selectedCell.row][selectedCell.col] = num;
         newErrors[selectedCell.row][selectedCell.col] = false;
+        setLastWrongNumber(null);
 
-        // Check if game is complete
+        // Check for completion
         const isComplete = newGrid.every(row => row.every(cell => cell !== 0));
         if (isComplete) {
           setIsGameComplete(true);
@@ -190,13 +195,15 @@ const SudokuGame = () => {
           }
         }
       } else {
+        newGrid[selectedCell.row][selectedCell.col] = num; // keep wrong value visible
         newErrors[selectedCell.row][selectedCell.col] = true;
+        setLastWrongNumber(num);
       }
 
       setGrid(newGrid);
       setErrors(newErrors);
 
-      // Send update to other players if online
+      // Sync with online multiplayer
       if (socket) {
         socket.emit('game_update', {
           grid: newGrid,
@@ -205,6 +212,7 @@ const SudokuGame = () => {
       }
     }
   };
+
 
   // eslint-disable-next-line
   const generateRoomCode = () => {
@@ -274,12 +282,17 @@ const SudokuGame = () => {
 
     // Selected cell
     if (selectedCell.row === row && selectedCell.col === col) {
-      className += ' bg-blue-600 text-white dark:bg-blue-500 ';
+      className += ' ring-2 ring-blue-500 dark:ring-blue-400 ';
     }
 
     // Error highlighting
     if (errors[row][col]) {
       className += ' bg-red-200 dark:bg-red-500 ';
+    }
+
+    // Highlight all cells with lastWrongNumber when active
+    if (lastWrongNumber !== null && grid[row][col] === lastWrongNumber) {
+      className += ' bg-red-300 dark:bg-red-600 ';
     }
 
     // Grid borders
