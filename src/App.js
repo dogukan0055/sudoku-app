@@ -260,45 +260,49 @@ const SudokuGame = () => {
   };
 
   const getCellClassName = (row, col) => {
-    let className = 'w-8 h-8 border border-gray-400 flex items-center justify-center text-sm font-medium cursor-pointer select-none ';
+    let className = `
+      w-8 h-8 border flex items-center justify-center text-sm font-medium cursor-pointer select-none
+      border-gray-400 dark:border-gray-600
+    `;
 
     // Initial numbers (uneditable)
     if (initialGrid[row][col] !== 0) {
-      className += 'bg-gray-100 text-gray-800 dark:text-gray-200 font-bold ';
+      className += ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
     } else {
-      className += 'bg-white dark:bg-gray-800 hover:bg-blue-50 ';
+      className += ' bg-white hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-blue-900 ';
     }
 
     // Selected cell
     if (selectedCell.row === row && selectedCell.col === col) {
-      className += 'bg-blue-600 ';
+      className += ' bg-blue-600 text-white dark:bg-blue-500 ';
     }
 
     // Error highlighting
     if (errors[row][col]) {
-      className += 'bg-red-200 ';
+      className += ' bg-red-200 dark:bg-red-500 ';
     }
 
     // Grid borders
-    if (row % 3 === 0 && row !== 0) className += 'border-t-2 border-t-black ';
-    if (col % 3 === 0 && col !== 0) className += 'border-l-2 border-l-black ';
-    if (row === 8) className += 'border-b-2 border-b-black ';
-    if (col === 8) className += 'border-r-2 border-r-black ';
+    if (row % 3 === 0 && row !== 0) className += ' border-t-2 border-t-black dark:border-t-white ';
+    if (col % 3 === 0 && col !== 0) className += ' border-l-2 border-l-black dark:border-l-white ';
+    if (row === 8) className += ' border-b-2 border-b-black dark:border-b-white ';
+    if (col === 8) className += ' border-r-2 border-r-black dark:border-r-white ';
 
     return className;
   };
+
 
   // Menu Screen
   if (gameMode === 'menu') {
     return (
       <div className={`
-        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4 
+        min-h-screen bg-white dark:bg-gray-800 p-4 
         flex items-center justify-center`}>
         <div className={`
           max-w-xl w-full mx-auto bg-white dark:bg-gray-800/90 backdrop-blur-sm 
           rounded-xl shadow-2xl p-8`}>
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-2">Sudoku</h1>
+            <h1 className="text-4xl font-bold bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 mb-2">Sudoku</h1>
             <p className="text-gray-600">Challenge your mind!</p>
           </div>
 
@@ -310,7 +314,7 @@ const SudokuGame = () => {
                 setDifficulty('easy');
                 generateNewGame('easy');
               }}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2"
             >
               <Play size={20} />
               Play Offline
@@ -341,7 +345,7 @@ const SudokuGame = () => {
   if (gameMode === 'host') {
     return (
       <div className={`
-        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4
+        min-h-screen bg-white dark:bg-gray-800 p-4
         flex items-center justify-center`}>
         <div className={`
           max-w-xl w-full mx-auto bg-white dark:bg-gray-800/90 backdrop-blur-sm 
@@ -387,7 +391,7 @@ const SudokuGame = () => {
   if (gameMode === 'join') {
     return (
       <div className={`
-        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4
+        min-h-screen bg-white dark:bg-gray-800 p-4
         flex items-center justify-center`}>
         <div className={`
           max-w-xl w-full mx-auto bg-white dark:bg-gray-800/90 backdrop-blur-sm 
@@ -443,7 +447,7 @@ const SudokuGame = () => {
   // Game Screen (both offline and online)
   return (
     <div className={`
-      min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4
+      min-h-screen bg-white dark:bg-gray-800 p-4
       container mx-auto max-w-7xl flex flex-col lg:flex-row gap-6`}>
       <div className={`
         flex-1 lg:max-w-2xl mx-auto w-full`}>
@@ -459,7 +463,7 @@ const SudokuGame = () => {
               </button>
               <button
                 onClick={toggleTheme}
-                className="p-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-800 dark:text-gray-200 dark:text-gray-200"
+                className="p-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-gray-200"
                 title="Toggle Theme"
               >
                 {theme === 'light' ? '🌙' : '☀️'}
@@ -526,14 +530,15 @@ const SudokuGame = () => {
               <button
                 key={num}
                 onClick={() => handleNumberInput(num)}
-                className="h-12 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg"
+                className="h-12 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 font-semibold rounded-lg"
               >
                 {num}
               </button>
             ))}
             <button
               onClick={() => handleNumberInput(0)}
-              className="h-12 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg"
+              className="h-12 bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-700
+ font-semibold rounded-lg"
             >
               Clear
             </button>
@@ -573,7 +578,7 @@ const SudokuGame = () => {
                 {messages.map(msg => (
                   <div key={msg.id} className={`text-sm mb-1 ${msg.type === 'system' ? 'text-gray-600 italic' :
                     msg.type === 'achievement' ? 'text-green-600 font-semibold' :
-                      'text-gray-800 dark:text-gray-200'
+                      'bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700'
                     }`}>
                     <span className="text-xs text-gray-500">{msg.timestamp}</span> {msg.text}
                   </div>
@@ -592,7 +597,7 @@ const SudokuGame = () => {
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg"
                   >
                     <Send size={20} />
                   </button>
