@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Users, MessageCircle, Send, Home, Play, UserPlus, Trophy, Clock, User } from 'lucide-react';
-import io from 'socket.io-client';
 import { formatTime, calculateProgress } from './utils/helpers'; // Import helper functions
 import { generateSudoku, createEmptyGrid } from './utils/sudoku'; // Import Sudoku generation logic
 import { createSocketConnection } from './utils/socket';
+import { useTheme } from './utils/theme';
 
 // Socket.IO connection
 const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
@@ -34,6 +34,9 @@ const SudokuGame = () => {
   const [showChat, setShowChat] = useState(false);
   // eslint-disable-next-line
   const [playerProgress, setPlayerProgress] = useState({});
+
+  const { theme, toggleTheme } = useTheme();
+
 
   // Timer effect
   useEffect(() => {
@@ -261,9 +264,9 @@ const SudokuGame = () => {
 
     // Initial numbers (uneditable)
     if (initialGrid[row][col] !== 0) {
-      className += 'bg-gray-100 text-gray-800 font-bold ';
+      className += 'bg-gray-100 text-gray-800 dark:text-gray-200 font-bold ';
     } else {
-      className += 'bg-white hover:bg-blue-50 ';
+      className += 'bg-white dark:bg-gray-800 hover:bg-blue-50 ';
     }
 
     // Selected cell
@@ -289,13 +292,13 @@ const SudokuGame = () => {
   if (gameMode === 'menu') {
     return (
       <div className={`
-        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 
+        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4 
         flex items-center justify-center`}>
         <div className={`
-          max-w-xl w-full mx-auto bg-white/90 backdrop-blur-sm 
+          max-w-xl w-full mx-auto bg-white dark:bg-gray-800/90 backdrop-blur-sm 
           rounded-xl shadow-2xl p-8`}>
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">Sudoku</h1>
+            <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-2">Sudoku</h1>
             <p className="text-gray-600">Challenge your mind!</p>
           </div>
 
@@ -338,10 +341,10 @@ const SudokuGame = () => {
   if (gameMode === 'host') {
     return (
       <div className={`
-        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4
+        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4
         flex items-center justify-center`}>
         <div className={`
-          max-w-xl w-full mx-auto bg-white/90 backdrop-blur-sm 
+          max-w-xl w-full mx-auto bg-white dark:bg-gray-800/90 backdrop-blur-sm 
           rounded-xl shadow-2xl p-8`}>
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold">Host Game</h2>
@@ -384,10 +387,10 @@ const SudokuGame = () => {
   if (gameMode === 'join') {
     return (
       <div className={`
-        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4
+        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4
         flex items-center justify-center`}>
         <div className={`
-          max-w-xl w-full mx-auto bg-white/90 backdrop-blur-sm 
+          max-w-xl w-full mx-auto bg-white dark:bg-gray-800/90 backdrop-blur-sm 
           rounded-xl shadow-2xl p-8`}>
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold">Join Game</h2>
@@ -440,12 +443,12 @@ const SudokuGame = () => {
   // Game Screen (both offline and online)
   return (
     <div className={`
-      min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4
+      min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4
       container mx-auto max-w-7xl flex flex-col lg:flex-row gap-6`}>
       <div className={`
         flex-1 lg:max-w-2xl mx-auto w-full`}>
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <button
@@ -453,6 +456,13 @@ const SudokuGame = () => {
                 className="p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
               >
                 <Home size={16} />
+              </button>
+              <button
+                onClick={toggleTheme}
+                className="p-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-800 dark:text-gray-200 dark:text-gray-200"
+                title="Toggle Theme"
+              >
+                {theme === 'light' ? '🌙' : '☀️'}
               </button>
               <div>
                 <h1 className="text-lg font-bold">Sudoku</h1>
@@ -493,7 +503,7 @@ const SudokuGame = () => {
         </div>
 
         {/* Sudoku Grid */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
           <div className="grid grid-cols-9 gap-0 border-2 border-black w-fit mx-auto">
             {grid.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
@@ -510,7 +520,7 @@ const SudokuGame = () => {
         </div>
 
         {/* Number Input */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <div className="grid grid-cols-5 gap-3">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
               <button
@@ -558,12 +568,12 @@ const SudokuGame = () => {
 
           {/* Chat panel */}
           {showChat && (
-            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sticky top-4">
               <div className="h-[400px] overflow-y-auto mb-4 border rounded-lg p-4">
                 {messages.map(msg => (
                   <div key={msg.id} className={`text-sm mb-1 ${msg.type === 'system' ? 'text-gray-600 italic' :
                     msg.type === 'achievement' ? 'text-green-600 font-semibold' :
-                      'text-gray-800'
+                      'text-gray-800 dark:text-gray-200'
                     }`}>
                     <span className="text-xs text-gray-500">{msg.timestamp}</span> {msg.text}
                   </div>
