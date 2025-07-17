@@ -63,40 +63,42 @@ const SudokuGame = () => {
     }
   };
 
-
-  // Timer effect
   useEffect(() => {
-    let interval;
-    if (isGameActive && !isGameComplete) {
+    if (isGameComplete) {
       if (gameMode === 'offline') {
         launchConfetti();
         Swal.fire({
+          toast: true,
+          position: 'top-end',
           icon: 'success',
           title: '🎉 Puzzle Completed!',
           text: 'Moving to the next level...',
+          showConfirmButton: false,
           timer: 3000,
-          showConfirmButton: false
+          timerProgressBar: true,
         });
         setTimeout(() => {
-          nextLevel(); // This should already exist to load the next puzzle
+          nextLevel();
         }, 3000);
       } else if (gameMode === 'online') {
         launchConfetti();
         Swal.fire({
+          toast: true,
+          position: 'top-end',
           icon: 'success',
           title: '🎉 Puzzle Completed!',
           text: 'You finished the puzzle!',
+          showConfirmButton: false,
           timer: 3000,
-          showConfirmButton: false
+          timerProgressBar: true,
         });
-        socket.emit('playerCompleted', { player: playerName }); // notify others
+        if (socket) {
+          socket.emit('playerCompleted', { player: playerName });
+        }
       }
-      interval = setInterval(() => {
-        setGameTime(prev => prev + 1);
-      }, 1000);
     }
-    return () => clearInterval(interval);
-  }, [isGameActive, isGameComplete]);
+  }, [isGameComplete]);
+
 
   // Socket.IO connection for online play
   const connectSocket = useCallback(() => {
