@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Users, MessageCircle, Send, Home, Play, UserPlus, Trophy, Clock, User } from 'lucide-react';
 import { formatTime, calculateProgress } from './utils/helpers'; // Import helper functions
 import { generateSudoku, createEmptyGrid } from './utils/sudoku'; // Import Sudoku generation logic
@@ -38,10 +38,25 @@ const SudokuGame = () => {
 
   const { theme, toggleTheme } = useTheme();
 
-  const playClick = useSoundEffect('/sounds/click.mp3', 0.3);
-  const playTap = useSoundEffect('/sounds/tap.mp3', 0.3);
-  const playError = useSoundEffect('/sounds/error.mp3', 0.3);
-  const playWin = useSoundEffect('/sounds/win.mp3', 0.4);
+  const clickSoundRef = useRef(null);
+  const tapSoundRef = useRef(null);
+  const errorSoundRef = useRef(null);
+  const winSoundRef = useRef(null);
+
+  useEffect(() => {
+    clickSoundRef.current = new Audio('/sounds/click.mp3');
+    tapSoundRef.current = new Audio('/sounds/tap.mp3');
+    errorSoundRef.current = new Audio('/sounds/error.mp3');
+    winSoundRef.current = new Audio('/sounds/win.mp3');
+  }, []);
+
+  const playSound = (soundRef) => {
+    if (soundRef.current) {
+      soundRef.current.pause();
+      soundRef.current.currentTime = 0;
+      soundRef.current.play();
+    }
+  };
 
 
   // Timer effect
@@ -171,13 +186,13 @@ const SudokuGame = () => {
   const handleCellClick = (row, col) => {
     if (initialGrid[row][col] === 0) {
       setSelectedCell({ row, col });
-      playClick();
+      playSound(clickSoundRef);
     }
   };
 
   const handleNumberInput = (num) => {
     if (selectedCell.row !== -1 && selectedCell.col !== -1) {
-      playTap();
+      playSound(tapSoundRef);
 
       const newGrid = [...grid.map(row => [...row])];
       const newErrors = [...errors.map(row => [...row])];
@@ -193,7 +208,7 @@ const SudokuGame = () => {
         // Check for completion
         const isComplete = newGrid.every(row => row.every(cell => cell !== 0));
         if (isComplete) {
-          playWin();
+          playSound(winSoundRef);
           setIsGameComplete(true);
           setIsGameActive(false);
           if (socket) {
@@ -203,7 +218,7 @@ const SudokuGame = () => {
       } else {
         newGrid[selectedCell.row][selectedCell.col] = num; // keep wrong value visible
         newErrors[selectedCell.row][selectedCell.col] = true;
-        playError();
+        playSound(errorSoundRef);
       }
 
       setGrid(newGrid);
