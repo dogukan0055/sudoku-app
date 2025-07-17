@@ -278,24 +278,14 @@ const SudokuGame = () => {
       const newErrors = [...errors];
 
       if (num === 0) {
-        // Clear the cell
         newGrid[selectedCell.row][selectedCell.col] = 0;
         newErrors[selectedCell.row][selectedCell.col] = false;
-      } else {
-        // Always place the number, but check if it's valid
+      } else if (isValidMove(selectedCell.row, selectedCell.col, num)) {
         newGrid[selectedCell.row][selectedCell.col] = num;
-        
-        // Check if the move is valid
-        const isValid = isValidMove(selectedCell.row, selectedCell.col, num);
-        newErrors[selectedCell.row][selectedCell.col] = !isValid;
+        newErrors[selectedCell.row][selectedCell.col] = false;
 
-        // Check for conflicts in the same row, column, and box
-        checkConflicts(selectedCell.row, selectedCell.col, num, newErrors);
-
-        // Check if game is complete only if there are no errors
-        const hasNoErrors = newErrors.every(row => row.every(cell => !cell));
-        const isComplete = hasNoErrors && newGrid.every(row => row.every(cell => cell !== 0));
-        
+        // Check if game is complete
+        const isComplete = newGrid.every(row => row.every(cell => cell !== 0));
         if (isComplete) {
           setIsGameComplete(true);
           setIsGameActive(false);
@@ -303,6 +293,8 @@ const SudokuGame = () => {
             socket.emit('game_completed', { time: gameTime });
           }
         }
+      } else {
+        newErrors[selectedCell.row][selectedCell.col] = true;
       }
 
       setGrid(newGrid);
@@ -316,35 +308,64 @@ const SudokuGame = () => {
         });
       }
     }
-};
+  };
 
-// Add this new helper function to check for conflicts
-const checkConflicts = (row, col, num, errorGrid) => {
-    // Check row
-    for (let i = 0; i < 9; i++) {
-      if (i !== col && grid[row][i] === num) {
-        errorGrid[row][i] = true;
-      }
-    }
+  const calculateProgress = (currentGrid) => {
+    const filled = currentGrid.flat().filter(cell => cell !== 0).length;
+    const total = 81;
+    return Math.round((filled / total) * 100);
+  };
 
-    // Check column
-    for (let i = 0; i < 9; i++) {
-      if (i !== row && grid[i][col] === num) {
-        errorGrid[i][col] = true;
-      }
-    }
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+  // eslint-disable-next-line
+  const generateRoomCode = () => {
+    return Math.random().toString(36).substr(2, 6).toUpperCase();
+  };
 
-    // Check 3x3 box
-    const startRow = Math.floor(row / 3) * 3;
-    const startCol = Math.floor(col / 3) * 3;
-    for (let i = startRow; i < startRow + 3; i++) {
-      for (let j = startCol; j < startCol + 3; j++) {
-        if ((i !== row || j !== col) && grid[i][j] === num) {
-          errorGrid[i][j] = true;
-        }
-      }
+  const hostGame = () => {
+    if (playerName.trim()) {
+      const newSocket = connectSocket();
+      const { puzzle, solution: sol } = generateSudoku();
+
+      setGrid(puzzle);
+      setSolution(sol);
+      setInitialGrid(puzzle.map(row => [...row]));
+      setErrors(Array(9).fill().map(() => Array(9).fill(false)));
+      setGameTime(0);
+      setIsGameComplete(false);
+      setIsGameActive(true);
+      setSelectedCell({ row: -1, col: -1 });
+      setGameMode('online');
+
+      // Wait for socket to connect before creating room
+      newSocket.on('connect', () => {
+        newSocket.emit('create_room', {
+          playerName: playerName,
+          puzzle: puzzle,
+          solution: sol
+        });
+      });
     }
-};
+  };
+
+  const joinGame = () => {
+    if (playerName.trim() && roomCode.trim()) {
+      const newSocket = connectSocket();
+      setGameMode('online');
+
+      // Wait for socket to connect before joining room
+      newSocket.on('connect', () => {
+        newSocket.emit('join_room', {
+          roomCode: roomCode,
+          playerName: playerName
+        });
+      });
+    }
+  };
 
   const nextLevel = () => {
     setCurrentLevel(prev => prev + 1);
