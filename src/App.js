@@ -1,99 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Users, MessageCircle, Send, Home, Play, UserPlus, Trophy, Clock, User } from 'lucide-react';
 import io from 'socket.io-client';
-
-// Sudoku Generator and Solver Logic
-const generateSudoku = (difficulty = 'easy') => {
-  // Create a solved grid
-  const grid = Array(9).fill().map(() => Array(9).fill(0));
-
-  // Fill diagonal boxes first
-  const fillDiagonal = () => {
-    for (let box = 0; box < 9; box += 3) {
-      fillBox(box, box);
-    }
-  };
-
-  const fillBox = (row, col) => {
-    const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        const randomIndex = Math.floor(Math.random() * nums.length);
-        grid[row + i][col + j] = nums[randomIndex];
-        nums.splice(randomIndex, 1);
-      }
-    }
-  };
-
-  const isValid = (grid, row, col, num) => {
-    // Check row
-    for (let x = 0; x < 9; x++) {
-      if (grid[row][x] === num) return false;
-    }
-
-    // Check column
-    for (let x = 0; x < 9; x++) {
-      if (grid[x][col] === num) return false;
-    }
-
-    // Check 3x3 box
-    const startRow = row - row % 3;
-    const startCol = col - col % 3;
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (grid[i + startRow][j + startCol] === num) return false;
-      }
-    }
-
-    return true;
-  };
-
-  const solve = (grid) => {
-    for (let row = 0; row < 9; row++) {
-      for (let col = 0; col < 9; col++) {
-        if (grid[row][col] === 0) {
-          for (let num = 1; num <= 9; num++) {
-            if (isValid(grid, row, col, num)) {
-              grid[row][col] = num;
-              if (solve(grid)) return true;
-              grid[row][col] = 0;
-            }
-          }
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-
-  fillDiagonal();
-  solve(grid);
-
-  // Create puzzle by removing numbers based on difficulty
-  const cellsToRemove = {
-    easy: 35,
-    medium: 45,
-    hard: 55
-  };
-
-  const puzzle = grid.map(row => [...row]);
-  const solution = grid.map(row => [...row]);
-
-  let removed = 0;
-  const target = cellsToRemove[difficulty] || 35;
-
-  while (removed < target) {
-    const row = Math.floor(Math.random() * 9);
-    const col = Math.floor(Math.random() * 9);
-
-    if (puzzle[row][col] !== 0) {
-      puzzle[row][col] = 0;
-      removed++;
-    }
-  }
-
-  return { puzzle, solution };
-};
+import { formatTime, calculateProgress } from './utils/helpers'; // Import helper functions
+import { generateSudoku } from './utils/sudoku'; // Import Sudoku generation logic
 
 // Socket.IO connection
 const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
@@ -102,12 +11,12 @@ const SudokuGame = () => {
   const [gameMode, setGameMode] = useState('menu'); // menu, offline, online, host, join
   const [currentLevel, setCurrentLevel] = useState(1);
   const [difficulty, setDifficulty] = useState('easy');
-  const [grid, setGrid] = useState(Array(9).fill().map(() => Array(9).fill(0)));
+  const [grid, setGrid] = useState(createEmptyGrid());
   // eslint-disable-next-line
-  const [solution, setSolution] = useState(Array(9).fill().map(() => Array(9).fill(0)));
-  const [initialGrid, setInitialGrid] = useState(Array(9).fill().map(() => Array(9).fill(0)));
+  const [solution, setSolution] = useState(createEmptyGrid());
+  const [initialGrid, setInitialGrid] = useState(createEmptyGrid());
   const [selectedCell, setSelectedCell] = useState({ row: -1, col: -1 });
-  const [errors, setErrors] = useState(Array(9).fill().map(() => Array(9).fill(false)));
+  const [errors, setErrors] = useState(createEmptyGrid());
   const [gameTime, setGameTime] = useState(0);
   const [isGameComplete, setIsGameComplete] = useState(false);
   const [isGameActive, setIsGameActive] = useState(false);
@@ -310,17 +219,6 @@ const SudokuGame = () => {
     }
   };
 
-  const calculateProgress = (currentGrid) => {
-    const filled = currentGrid.flat().filter(cell => cell !== 0).length;
-    const total = 81;
-    return Math.round((filled / total) * 100);
-  };
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
   // eslint-disable-next-line
   const generateRoomCode = () => {
     return Math.random().toString(36).substr(2, 6).toUpperCase();
