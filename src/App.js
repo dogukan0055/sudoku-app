@@ -263,15 +263,15 @@ const SudokuGame = () => {
 
   const getCellClassName = (row, col) => {
     let className = `
-      w-8 h-8 border flex items-center justify-center text-sm font-medium cursor-pointer select-none
-      border-gray-400 dark:border-gray-600
-    `;
+    w-8 h-8 border flex items-center justify-center text-sm font-medium cursor-pointer select-none
+    border-gray-400 dark:border-gray-600
+  `;
 
     // Initial numbers (uneditable)
     if (initialGrid[row][col] !== 0) {
       className += ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
     } else {
-      className += ' bg-white hover:bg-blue-500 dark:bg-gray-800 dark:hover:bg-blue-900 ';
+      className += ' bg-white hover:bg-blue-500 hover:text-white dark:bg-gray-800 dark:hover:bg-blue-900 ';
     }
 
     // Selected cell
@@ -281,7 +281,7 @@ const SudokuGame = () => {
 
     // Error highlighting
     if (errors[row][col]) {
-      className += ' bg-red-500 dark:bg-red-500 ';
+      className += ' bg-red-500 dark:bg-red-500 text-white ';
     }
 
     // Grid borders
@@ -292,7 +292,6 @@ const SudokuGame = () => {
 
     return className;
   };
-
 
   // Menu Screen
   if (gameMode === 'menu') {
