@@ -281,7 +281,7 @@ const SudokuGame = () => {
 
     // Error highlighting
     if (errors[row][col]) {
-      className += ' bg-red-200 dark:bg-red-500 ';
+      className += ' bg-red-500 dark:bg-red-500 ';
     }
 
     // Grid borders
