@@ -3,6 +3,7 @@ import { Users, MessageCircle, Send, Home, Play, UserPlus, Trophy, Clock, User }
 import io from 'socket.io-client';
 import { formatTime, calculateProgress } from './utils/helpers'; // Import helper functions
 import { generateSudoku, createEmptyGrid } from './utils/sudoku'; // Import Sudoku generation logic
+import { createSocketConnection } from './utils/socket';
 
 // Socket.IO connection
 const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
@@ -47,66 +48,49 @@ const SudokuGame = () => {
 
   // Socket.IO connection for online play
   const connectSocket = useCallback(() => {
-    const newSocket = io(SOCKET_SERVER);
-
-    newSocket.on('connect', () => {
-      setIsConnected(true);
-      console.log('Connected to server');
-    });
-
-    newSocket.on('disconnect', () => {
-      setIsConnected(false);
-      console.log('Disconnected from server');
-    });
-
-    newSocket.on('room_created', ({ roomCode, players }) => {
-      setRoomCode(roomCode);
-      setPlayers(players);
-      addMessage(`Room ${roomCode} created! Share this code with friends.`, 'system');
-    });
-
-    newSocket.on('player_joined', ({ player, players, puzzle }) => {
-      setPlayers(players);
-      if (puzzle) {
-        setGrid(puzzle);
-        setInitialGrid(puzzle.map(row => [...row]));
-      }
-      addMessage(`${player} joined the game`, 'system');
-    });
-
-    newSocket.on('player_left', ({ player, players }) => {
-      setPlayers(players);
-      addMessage(`${player} left the game`, 'system');
-    });
-
-    newSocket.on('player_update', ({ playerName, progress, players }) => {
-      setPlayers(players);
-      setPlayerProgress(prev => ({
-        ...prev,
-        [playerName]: progress
-      }));
-    });
-
-    newSocket.on('chat_message', ({ player, message, timestamp }) => {
-      addMessage(`${player}: ${message}`, 'chat');
-    });
-
-    newSocket.on('section_completed', ({ player, sectionType }) => {
-      addMessage(`${player} completed a ${sectionType}!`, 'achievement');
-    });
-
-    newSocket.on('game_completed', ({ player, time }) => {
-      addMessage(`${player} completed the puzzle in ${formatTime(time)}!`, 'achievement');
-    });
-
-    newSocket.on('error', ({ message }) => {
-      addMessage(`Error: ${message}`, 'error');
+    const newSocket = createSocketConnection({
+      onRoomCreated: ({ roomCode, players }) => {
+        setRoomCode(roomCode);
+        setPlayers(players);
+        addMessage(`Room ${roomCode} created! Share this code with friends.`, 'system');
+      },
+      onPlayerJoined: ({ player, players, puzzle }) => {
+        setPlayers(players);
+        if (puzzle) {
+          setGrid(puzzle);
+          setInitialGrid(puzzle.map(row => [...row]));
+        }
+        addMessage(`${player} joined the game`, 'system');
+      },
+      onPlayerLeft: ({ player, players }) => {
+        setPlayers(players);
+        addMessage(`${player} left the game`, 'system');
+      },
+      onPlayerUpdate: ({ playerName, progress, players }) => {
+        setPlayers(players);
+        setPlayerProgress(prev => ({
+          ...prev,
+          [playerName]: progress
+        }));
+      },
+      onChatMessage: ({ player, message, timestamp }) => {
+        addMessage(`${player}: ${message}`, 'chat');
+      },
+      onSectionCompleted: ({ player, sectionType }) => {
+        addMessage(`${player} completed a ${sectionType}!`, 'achievement');
+      },
+      onGameCompleted: ({ player, time }) => {
+        addMessage(`${player} completed the puzzle in ${formatTime(time)}!`, 'achievement');
+      },
+      onError: ({ message }) => {
+        addMessage(`Error: ${message}`, 'error');
+      },
     });
 
     setSocket(newSocket);
-
     return newSocket;
   }, []);
+
 
   // Clean up socket on unmount
   useEffect(() => {
