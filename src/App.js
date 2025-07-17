@@ -42,12 +42,14 @@ const SudokuGame = () => {
   const tapSoundRef = useRef(null);
   const errorSoundRef = useRef(null);
   const winSoundRef = useRef(null);
+  const chatSoundRef = useRef(null);
 
   useEffect(() => {
     clickSoundRef.current = new Audio('/sounds/click.mp3');
     tapSoundRef.current = new Audio('/sounds/tap.mp3');
     errorSoundRef.current = new Audio('/sounds/error.mp3');
     winSoundRef.current = new Audio('/sounds/win.mp3');
+    chatSoundRef.current = new Audio('/sounds/chat.mp3');
   }, []);
 
   const playSound = (soundRef) => {
@@ -99,6 +101,7 @@ const SudokuGame = () => {
       },
       onChatMessage: ({ player, message, timestamp }) => {
         addMessage(`${player}: ${message}`, 'chat');
+        playSound(chatSoundRef);
       },
       onSectionCompleted: ({ player, sectionType }) => {
         addMessage(`${player} completed a ${sectionType}!`, 'achievement');
