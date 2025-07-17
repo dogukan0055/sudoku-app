@@ -262,36 +262,38 @@ const SudokuGame = () => {
   };
 
   const getCellClassName = (row, col) => {
-    let className = `
+    let baseClass = `
     w-8 h-8 border flex items-center justify-center text-sm font-medium cursor-pointer select-none
     border-gray-400 dark:border-gray-600
   `;
 
-    // Initial numbers (uneditable)
-    if (initialGrid[row][col] !== 0) {
-      className += ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
-    } else {
-      className += ' bg-white hover:bg-blue-500 hover:text-white dark:bg-gray-800 dark:hover:bg-blue-900 dark:text-white ';
-    }
-
-    // Selected cell
-    if (selectedCell.row === row && selectedCell.col === col) {
-      className += ' ring-2 ring-blue-500 dark:ring-blue-400 ';
-    }
+    // Grid borders
+    if (row % 3 === 0 && row !== 0) baseClass += ' border-t-2 border-t-black dark:border-t-white ';
+    if (col % 3 === 0 && col !== 0) baseClass += ' border-l-2 border-l-black dark:border-l-white ';
+    if (row === 8) baseClass += ' border-b-2 border-b-black dark:border-b-white ';
+    if (col === 8) baseClass += ' border-r-2 border-r-black dark:border-r-white ';
 
     // Error highlighting
     if (errors[row][col]) {
-      className += ' bg-red-500 dark:bg-red-500 text-white ';
+      return baseClass + ' bg-red-500 text-white ';
     }
 
-    // Grid borders
-    if (row % 3 === 0 && row !== 0) className += ' border-t-2 border-t-black dark:border-t-white ';
-    if (col % 3 === 0 && col !== 0) className += ' border-l-2 border-l-black dark:border-l-white ';
-    if (row === 8) className += ' border-b-2 border-b-black dark:border-b-white ';
-    if (col === 8) className += ' border-r-2 border-r-black dark:border-r-white ';
+    // Initial numbers (uneditable)
+    if (initialGrid[row][col] !== 0) {
+      return baseClass + ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
+    }
 
-    return className;
+    // Editable cells (normal)
+    let editableClass = ' bg-white hover:bg-blue-500 hover:text-white dark:bg-gray-800 dark:hover:bg-blue-900 dark:text-white ';
+
+    // Selected cell highlight
+    if (selectedCell.row === row && selectedCell.col === col) {
+      editableClass += ' ring-2 ring-blue-500 dark:ring-blue-400 ';
+    }
+
+    return baseClass + editableClass;
   };
+
 
 
   // Menu Screen
