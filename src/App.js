@@ -10,10 +10,10 @@ import { launchConfetti } from './utils/confetti';
 
 
 // Socket.IO connection
-const SOCKET_SERVER = 'sudoku-app-production.up.railway.app'; // Change this to your server URL
+const SOCKET_SERVER = 'sudoku-app-production.up.railway.app';
 
 const SudokuGame = () => {
-  const [gameMode, setGameMode] = useState('menu'); // menu, offline, online, host, join
+  const [gameMode, setGameMode] = useState('menu');
   const [currentLevel, setCurrentLevel] = useState(1);
   const [difficulty, setDifficulty] = useState('easy');
   const [grid, setGrid] = useState(createEmptyGrid());
@@ -46,6 +46,25 @@ const SudokuGame = () => {
   const errorSoundRef = useRef(null);
   const winSoundRef = useRef(null);
   const chatSoundRef = useRef(null);
+
+  const [notifiedMilestones, setNotifiedMilestones] = useState([]);
+
+  useEffect(() => {
+    if (gameMode === 'online' && socket && playerName && !isGameComplete) {
+      const cellsRemaining = grid.flat().filter(cell => cell === 0).length;
+
+      const milestones = [15, 10, 5, 4, 3, 2, 1];
+      milestones.forEach(milestone => {
+        if (cellsRemaining === milestone && !notifiedMilestones.includes(milestone)) {
+          socket.emit('playerAlmostDone', { player: playerName, remaining: milestone });
+          setNotifiedMilestones(prev => [...prev, milestone]);
+        }
+      });
+    }
+  }, [grid, socket, playerName, gameMode, isGameComplete, notifiedMilestones]);
+
+
+
 
   useEffect(() => {
     clickSoundRef.current = new Audio('/sounds/click.mp3');
@@ -102,6 +121,7 @@ const SudokuGame = () => {
 
   // Socket.IO connection for online play
   const connectSocket = useCallback(() => {
+
     const newSocket = createSocketConnection({
       onRoomCreated: ({ roomCode, players }) => {
         setRoomCode(roomCode);
@@ -134,12 +154,25 @@ const SudokuGame = () => {
       onSectionCompleted: ({ player, sectionType }) => {
         addMessage(`${player} completed a ${sectionType}!`, 'achievement');
       },
+
       onGameCompleted: ({ player, time }) => {
         addMessage(`${player} completed the puzzle in ${formatTime(time)}!`, 'achievement');
       },
       onError: ({ message }) => {
         addMessage(`Error: ${message}`, 'error');
       },
+    });
+
+    newSocket.on('playerAlmostDone', ({ player, remaining }) => {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: `${player} has ${remaining} ${remaining === 1 ? 'cell' : 'cells'} remaining!`,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     });
 
     setSocket(newSocket);

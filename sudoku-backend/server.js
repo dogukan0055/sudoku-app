@@ -156,6 +156,11 @@ io.on('connection', (socket) => {
         });
     });
 
+    socket.on('playerAlmostDone', ({ player, remaining }) => {
+        socket.to(roomCode).emit('playerAlmostDone', { player, remaining });
+    });
+
+
     // Handle game completion
     socket.on('game_completed', ({ time }) => {
         const playerInfo = playerSockets.get(socket.id);
