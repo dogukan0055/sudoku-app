@@ -271,7 +271,7 @@ const SudokuGame = () => {
     if (initialGrid[row][col] !== 0) {
       className += ' bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white font-bold ';
     } else {
-      className += ' bg-white hover:bg-blue-500 hover:text-white dark:bg-gray-800 dark:hover:bg-blue-900 ';
+      className += ' bg-white hover:bg-blue-500 hover:text-white dark:bg-gray-800 dark:hover:bg-blue-900 dark:text-white ';
     }
 
     // Selected cell
@@ -292,6 +292,7 @@ const SudokuGame = () => {
 
     return className;
   };
+
 
   // Menu Screen
   if (gameMode === 'menu') {
