@@ -406,8 +406,12 @@ const SudokuGame = () => {
   // Menu Screen
   if (gameMode === 'menu') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-        <div className="max-w-md mx-auto">
+      <div className={`
+        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 
+        flex items-center justify-center`}>
+        <div className={`
+          max-w-xl w-full mx-auto bg-white/90 backdrop-blur-sm 
+          rounded-xl shadow-2xl p-8`}>
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-2">Sudoku</h1>
             <p className="text-gray-600">Challenge your mind!</p>
@@ -451,38 +455,42 @@ const SudokuGame = () => {
   // Host Game Screen
   if (gameMode === 'host') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-center mb-6">Host Game</h2>
+      <div className={`
+        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4
+        flex items-center justify-center`}>
+        <div className={`
+          max-w-xl w-full mx-auto bg-white/90 backdrop-blur-sm 
+          rounded-xl shadow-2xl p-8`}>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold">Host Game</h2>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your name"
-                />
-              </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+              <input
+                type="text"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your name"
+              />
+            </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={hostGame}
-                  disabled={!playerName.trim()}
-                  className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg"
-                >
-                  Create Room
-                </button>
-                <button
-                  onClick={() => setGameMode('menu')}
-                  className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
-                >
-                  <Home size={20} />
-                </button>
-              </div>
+            <div className="flex gap-2">
+              <button
+                onClick={hostGame}
+                disabled={!playerName.trim()}
+                className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg"
+              >
+                Create Room
+              </button>
+              <button
+                onClick={() => setGameMode('menu')}
+                className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
+              >
+                <Home size={20} />
+              </button>
             </div>
           </div>
         </div>
@@ -493,49 +501,53 @@ const SudokuGame = () => {
   // Join Game Screen
   if (gameMode === 'join') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-center mb-6">Join Game</h2>
+      <div className={`
+        min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4
+        flex items-center justify-center`}>
+        <div className={`
+          max-w-xl w-full mx-auto bg-white/90 backdrop-blur-sm 
+          rounded-xl shadow-2xl p-8`}>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold">Join Game</h2>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your name"
-                />
-              </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+              <input
+                type="text"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your name"
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Room Code</label>
-                <input
-                  type="text"
-                  value={roomCode}
-                  onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter room code"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Room Code</label>
+              <input
+                type="text"
+                value={roomCode}
+                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter room code"
+              />
+            </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={joinGame}
-                  disabled={!playerName.trim() || !roomCode.trim()}
-                  className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg"
-                >
-                  Join Room
-                </button>
-                <button
-                  onClick={() => setGameMode('menu')}
-                  className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
-                >
-                  <Home size={20} />
-                </button>
-              </div>
+            <div className="flex gap-2">
+              <button
+                onClick={joinGame}
+                disabled={!playerName.trim() || !roomCode.trim()}
+                className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg"
+              >
+                Join Room
+              </button>
+              <button
+                onClick={() => setGameMode('menu')}
+                className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
+              >
+                <Home size={20} />
+              </button>
             </div>
           </div>
         </div>
@@ -545,10 +557,13 @@ const SudokuGame = () => {
 
   // Game Screen (both offline and online)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-2">
-      <div className="max-w-md mx-auto">
+    <div className={`
+      min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4
+      container mx-auto max-w-7xl flex flex-col lg:flex-row gap-6`}>
+      <div className={`
+        flex-1 lg:max-w-2xl mx-auto w-full`}>
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <button
@@ -596,7 +611,7 @@ const SudokuGame = () => {
         </div>
 
         {/* Sudoku Grid */}
-        <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
           <div className="grid grid-cols-9 gap-0 border-2 border-black w-fit mx-auto">
             {grid.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
@@ -613,8 +628,8 @@ const SudokuGame = () => {
         </div>
 
         {/* Number Input */}
-        <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
-          <div className="grid grid-cols-5 gap-2">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="grid grid-cols-5 gap-3">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
               <button
                 key={num}
@@ -632,73 +647,81 @@ const SudokuGame = () => {
             </button>
           </div>
         </div>
-
-        {/* Game Complete */}
-        {isGameComplete && (
-          <div className="bg-green-100 border border-green-400 rounded-lg p-4 mb-4">
-            <div className="flex items-center gap-2 text-green-700">
-              <Trophy size={20} />
-              <span className="font-semibold">Congratulations!</span>
-            </div>
-            <p className="text-green-600 text-sm">
-              Completed in {formatTime(gameTime)}
-            </p>
-            {gameMode === 'offline' && (
-              <button
-                onClick={nextLevel}
-                className="mt-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
-              >
-                Next Level
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Online Chat */}
-        {gameMode === 'online' && showChat && (
-          <div className="bg-white rounded-lg shadow-lg p-4">
-            <div className="h-32 overflow-y-auto mb-3 border rounded p-2">
-              {messages.map(msg => (
-                <div key={msg.id} className={`text-sm mb-1 ${msg.type === 'system' ? 'text-gray-600 italic' :
-                  msg.type === 'achievement' ? 'text-green-600 font-semibold' :
-                    'text-gray-800'
-                  }`}>
-                  <span className="text-xs text-gray-500">{msg.timestamp}</span> {msg.text}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={currentMessage}
-                onChange={(e) => setCurrentMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Type a message..."
-              />
-              <button
-                onClick={sendMessage}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-              >
-                <Send size={16} />
-              </button>
-            </div>
-
-            <div className="flex gap-1 text-lg">
-              {['🎉', '👍', '😊', '🔥', '💪', '🧠'].map(emoji => (
-                <button
-                  key={emoji}
-                  onClick={() => sendEmoji(emoji)}
-                  className="p-1 hover:bg-gray-100 rounded"
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Side panel for online mode */}
+      {gameMode === 'online' && (
+        <div className={`
+          lg:w-80 space-y-4`}>
+          {/* Game completion message */}
+          {isGameComplete && (
+            <div className="bg-green-100 border border-green-400 rounded-xl p-6">
+              <div className="flex items-center gap-2 text-green-700">
+                <Trophy size={20} />
+                <span className="font-semibold">Congratulations!</span>
+              </div>
+              <p className="text-green-600 text-sm">
+                Completed in {formatTime(gameTime)}
+              </p>
+              {gameMode === 'offline' && (
+                <button
+                  onClick={nextLevel}
+                  className="mt-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
+                >
+                  Next Level
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Chat panel */}
+          {showChat && (
+            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
+              <div className="h-[400px] overflow-y-auto mb-4 border rounded-lg p-4">
+                {messages.map(msg => (
+                  <div key={msg.id} className={`text-sm mb-1 ${msg.type === 'system' ? 'text-gray-600 italic' :
+                    msg.type === 'achievement' ? 'text-green-600 font-semibold' :
+                      'text-gray-800'
+                    }`}>
+                    <span className="text-xs text-gray-500">{msg.timestamp}</span> {msg.text}
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={currentMessage}
+                    onChange={(e) => setCurrentMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+                    placeholder="Type a message..."
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+                  >
+                    <Send size={20} />
+                  </button>
+                </div>
+
+                <div className="flex gap-2 text-xl justify-center">
+                  {['🎉', '👍', '😊', '🔥', '💪', '🧠'].map(emoji => (
+                    <button
+                      key={emoji}
+                      onClick={() => sendEmoji(emoji)}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
